@@ -1294,6 +1294,8 @@ class VaultAES256:
         b_ciphertext, b_salt, b_crypted_hmac = parse_vaulttext(b_vaulttext)
         print("This is the stored salt")
         print(b_salt)
+        print("this is the stored ciphertext:")
+        print(b_ciphertext)
         # TODO: would be nice if a VaultSecret could be passed directly to _decrypt_*
         #       (move _gen_key_initctr() to a AES256 VaultSecret or VaultContext impl?)
         # though, likely needs to be python cryptography specific impl that basically
