@@ -1174,6 +1174,9 @@ class VaultAES256:
             iv_length = algorithms.AES.block_size // 8
 
             b_derivedkey = cls._create_key_cryptography(b_password, b_salt, key_length, iv_length)
+            print("*****The derived key is******")
+            print(b_derivedkey)
+            print("**********")
             b_iv = b_derivedkey[(key_length * 2):(key_length * 2) + iv_length]
         else:
             raise AnsibleError(NEED_CRYPTO_LIBRARY + '(Detected in initctr)')
@@ -1219,7 +1222,21 @@ class VaultAES256:
             b_salt = to_bytes(salt)
 
         b_password = secret.bytes
+        print("The salt is:")
+        print(b_salt)
+        print("The original password is :")
+        print(secret)
+        print("password in bytes")
+        print(b_password)
         b_key1, b_key2, b_iv = cls._gen_key_initctr(b_password, b_salt)
+        print("The keys and IV for the cipher is:")
+        print("The key for the cipher is :")
+        print(b_key1)
+        print("the key for HMAC is: ")
+        print(b_key2)
+        print("the IV is :")
+        print(b_iv)
+
 
         if HAS_CRYPTOGRAPHY:
             b_hmac, b_ciphertext = cls._encrypt_cryptography(b_plaintext, b_key1, b_key2, b_iv)
@@ -1275,7 +1292,8 @@ class VaultAES256:
     def decrypt(cls, b_vaulttext, secret):
 
         b_ciphertext, b_salt, b_crypted_hmac = parse_vaulttext(b_vaulttext)
-
+        print("This is the stored salt")
+        print(b_salt)
         # TODO: would be nice if a VaultSecret could be passed directly to _decrypt_*
         #       (move _gen_key_initctr() to a AES256 VaultSecret or VaultContext impl?)
         # though, likely needs to be python cryptography specific impl that basically
@@ -1283,7 +1301,13 @@ class VaultAES256:
         b_password = secret.bytes
 
         b_key1, b_key2, b_iv = cls._gen_key_initctr(b_password, b_salt)
-
+        print("This is the new derived keys and iv from password")
+        print("The aes key:")
+        print(b_key1)
+        print("hmac key: ")
+        print(b_key2)
+        print("this is the IV:")
+        print(b_iv)
         if HAS_CRYPTOGRAPHY:
             b_plaintext = cls._decrypt_cryptography(b_ciphertext, b_crypted_hmac, b_key1, b_key2, b_iv)
         else:
